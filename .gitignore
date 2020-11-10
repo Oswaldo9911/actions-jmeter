@@ -1,0 +1,14 @@
+lending_portal.jmx
+lending_portal_bfs.jmx
+originationservice.jmx
+clover_connection.jmx
+parther_portal.jmx
+
+results/
+apache-jmeter*
+*.log
+*.jtl
+*.png
+.idea
+*.iml
+.DS_Store

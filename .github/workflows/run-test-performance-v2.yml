@@ -1,0 +1,68 @@
+name: Run Performance Test V2
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'Endpoint to test'
+        required: true
+        default: 'clover-os-uat.lendingfront.com'
+      name_test:
+        description: 'File name .jmx to run'
+        required: true
+        default: 'originationservice_with_parameters.jmx'
+      timeout:
+        description: 'Timeout to fail test (Value in milliseconds)'
+        required: true
+        default: '10000'
+      threads:
+        description: 'Threads concurrent to run'
+        required: true
+        default: '1'
+      loops:
+        description: 'Number of times the test will run'
+        required: true
+        default: '1'
+jobs:
+  Run_Performance_Test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Python
+        run: echo "python"
+      - name: Set up Python
+        uses: actions/setup-python@master
+        with:
+          python-version: 2.7
+      - name: Install JMeter
+        run: |
+          chmod +x bin/JMeterInstaller.py
+          rm -rf results && mkdir results
+          chmod -R 777 ./
+      - name: Run and Generate Report
+        run: apache-jmeter-5.1/bin/jmeter.sh -j results/jmeter.log -p tests/user.properties -t tests/${{ github.event.inputs.name_test }} -n -l results/result.csv -Jserver=${{ github.event.inputs.url }} -Jtimeout=${{ github.event.inputs.timeout }} -Jthreads=${{ github.event.inputs.threads }} -JloopCount=${{ github.event.inputs.loops }}
+      - name: Generate Report
+        run: |
+          rm -rf results/JMeterReport && mkdir results/JMeterReport
+          apache-jmeter-5.1/bin/jmeter.sh -g results/result.csv -o results/JMeterReport
+      - name: Upload Results
+        uses: actions/upload-artifact@v2
+        with:
+          name: report-${{ github.event.inputs.name_test }}
+          path: results/JMeterReport/
+      - name: Public Reports
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          SOURCE_DIR: "report/"
+          DEST_DIR: "performance/"
+      - name: Slack notification
+        uses: archive/github-actions-slack@v1.0.3
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: "#aut-team"
+          slack-text: ":done: Results Performance Test : ${{ github.event.inputs.name_test }} (<https://${{ secrets.AWS_S3_BUCKET }}.s3.amazonaws.com/performance/index.html|log>) executed by `${{ github.actor }}`\n<https://github.com/lendingfront/performance-test/actions/runs/${{ github.run_id }}|download evidence>"
