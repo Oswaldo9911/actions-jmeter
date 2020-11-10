@@ -34,7 +34,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@master
         with:
-          python-version: 2.7
+          python-version: 2.7.15
       - name: Install JMeter
         run: |
           chmod +x bin/JMeterInstaller.py
