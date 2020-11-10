@@ -1,4 +1,4 @@
-import os, sys, hashlib, urllib2, tempfile, zipfile, distutils.core
+import os, sys, hashlib, tempfile, zipfile, distutils.core
 
 class JMeterInstaller(object):
 
