@@ -36,7 +36,7 @@ jobs:
           python-version: 2.7
       - name: Install JMeter
         run: |
-          chmod +x bin/JMeterInstaller.py
+          bin/JMeterInstaller.py
           rm -rf results && mkdir results
           chmod -R 777 ./
       - name: Run and Generate Report
