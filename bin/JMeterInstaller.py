@@ -48,7 +48,7 @@ class JMeterInstaller(object):
             with(zipfile.ZipFile(self.download_dir + "jmeter.zip", "r")) as z:
                 z.extractall()
 
-            os.chmod(self.jmeter_dir + "/bin/jmeter.sh", 0)
+            os.chmod(self.jmeter_dir + "/bin/jmeter.sh", 777)
         else:
             print("JMeter directory [%s] exists... skipping" % self.jmeter_dir)
 
@@ -76,7 +76,7 @@ class JMeterInstaller(object):
             return os.path.exists(self.jmeter_dir)
         except:
             self.clean()
-            print "Unexpected error:", sys.exc_info()
+            print("Unexpected error:", sys.exc_info())
             raise
 
 
