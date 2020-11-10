@@ -34,7 +34,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: 2.7.15
+          python-version: 2.7
       - name: Install JMeter
         run: |
           python -m pip install --upgrade pip
