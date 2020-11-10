@@ -1,4 +1,4 @@
-import os, sys, hashlib, urllib3, tempfile, zipfile, distutils.core
+import os, sys, hashlib, urllib2, tempfile, zipfile, distutils.core
 
 class JMeterInstaller(object):
 
@@ -18,8 +18,7 @@ class JMeterInstaller(object):
 
     def get_file(self, url, local_path):
         print("Downloading " + url)
-        http = urllib3.PoolManager()
-        stream = http.request('GET', 'url')
+        stream = urllib2.urlopen(url)
         with(open(self.download_dir + local_path, "wb")) as f:
             f.write(stream.read())
 
