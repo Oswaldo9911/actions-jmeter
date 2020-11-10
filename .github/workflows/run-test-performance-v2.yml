@@ -1,4 +1,5 @@
 name: Run Performance Test V2
+
 on:
   workflow_dispatch:
     inputs:
@@ -36,7 +37,7 @@ jobs:
           python-version: 2.7
       - name: Install JMeter
         run: |
-          bin/JMeterInstaller.py
+          chmod +x bin/JMeterInstaller.py
           rm -rf results && mkdir results
           chmod -R 777 ./
       - name: Run and Generate Report
