@@ -1,7 +1,7 @@
 name: Run Lending Portal Performance BFS
 on:
   schedule:
-    - cron:  '00 3 * * *'
+    - cron:  '00 20 * * *'
 jobs:
   Run_Performance_Test-BFS:
     runs-on: ubuntu-latest
@@ -47,31 +47,4 @@ jobs:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: "#notification-test"
           slack-text: ":done: Results Performance Test : lending_portal_bfs_pro_with_parameters.jmx (<https://${{ secrets.AWS_S3_BUCKET }}.s3.amazonaws.com/performance/index.html|log>) executed by `${{ github.actor }}`\n<https://github.com/lendingfront/performance-test/actions/runs/${{ github.run_id }}|download evidence>"
-  Run_Performance_Test-LP:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        threads: [1, 10]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.7
-      - name: Install JMeter
-        run: |
-          python bin/JMeterInstaller.py
-          rm -rf results && mkdir results
-          chmod -R 777 ./
-      - name: Run and Generate Report
-        run: apache-jmeter-5.1/bin/jmeter.sh -j results/jmeter.log -p tests/user.properties -t tests/originationservice_with_parameters.jmx -n -l results/result${{ matrix.threads }}.csv -Jserver=clover-os-uat.lendingfront.com -Jtimeout=10000 -Jthreads=${{ matrix.threads }} -JloopCount=1
-      - name: Generate Report
-        run: |
-          rm -rf results/JMeterReport${{ matrix.threads }} && mkdir results/JMeterReport${{ matrix.threads }}
-          apache-jmeter-5.1/bin/jmeter.sh -g results/result${{ matrix.threads }}.csv -o results/JMeterReport${{ matrix.threads }}
-      - name: Upload Results
-        uses: actions/upload-artifact@v2
-        with:
-          name: report-lending_portal_bfs_pro_with_parameters_${{ matrix.threads }}.jmx
-          path: results/JMeterReport${{ matrix.threads }}/
+ 
