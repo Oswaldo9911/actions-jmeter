@@ -1,9 +1,12 @@
 name: Run Lending Portal Performance BFS
 on:
+  push:
+    branches:
+      - master
   schedule:
-    - cron:  '25 8 * * *'
+    - cron:  '30 20 * * *'
 jobs:
-  Run_Performance_Test-BFS:
+  Run_Performance_Test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -47,4 +50,3 @@ jobs:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: "#notification-test"
           slack-text: ":done: Results Performance Test : lending_portal_bfs_pro_with_parameters.jmx (<https://${{ secrets.AWS_S3_BUCKET }}.s3.amazonaws.com/performance/index.html|log>) executed by `${{ github.actor }}`\n<https://github.com/lendingfront/performance-test/actions/runs/${{ github.run_id }}|download evidence>"
- 
