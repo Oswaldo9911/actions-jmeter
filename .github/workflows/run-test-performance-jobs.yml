@@ -1,0 +1,49 @@
+name: Run Lending Portal Performance BFS
+on:
+  schedule:
+    - cron:  '7 11 * * *'
+jobs:
+  Run_Performance_Test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        threads: [1, 10]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - name: Install JMeter
+        run: |
+          python bin/JMeterInstaller.py
+          rm -rf results && mkdir results
+          chmod -R 777 ./
+      - name: Run and Generate Report
+        run: apache-jmeter-5.1/bin/jmeter.sh -j results/jmeter.log -p tests/user.properties -t tests/originationservice_with_parameters.jmx -n -l results/result.csv -Jserver=clover-os-uat.lendingfront.com -Jtimeout=10000 -Jthreads=${{ matrix.threads }} -JloopCount=1
+      - name: Generate Report
+        run: |
+          rm -rf results/JMeterReport && mkdir results/JMeterReport
+          apache-jmeter-5.1/bin/jmeter.sh -g results/result.csv -o results/JMeterReport
+      - name: Upload Results
+        uses: actions/upload-artifact@v2
+        with:
+          name: report-lending_portal_bfs_pro_with_parameters.jmx
+          path: results/JMeterReport/
+      - name: Public Reports
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          SOURCE_DIR: "results/JMeterReport/"
+          DEST_DIR: "performance/"
+      - name: Slack notification
+        uses: archive/github-actions-slack@v1.0.3
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: "#notification-test"
+          slack-text: ":done: Results Performance Test : lending_portal_bfs_pro_with_parameters.jmx (<https://${{ secrets.AWS_S3_BUCKET }}.s3.amazonaws.com/performance/index.html|log>) executed by `${{ github.actor }}`\n<https://github.com/lendingfront/performance-test/actions/runs/${{ github.run_id }}|download evidence>"
