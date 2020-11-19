@@ -1,8 +1,7 @@
 name: Run Lending Portal Performance BFS
 on:
-  push:
-    branches:
-      - master
+  schedule:
+    - cron:  '*/15 * * * *'
 jobs:
   Run_Performance_Test:
     runs-on: ubuntu-latest
@@ -30,7 +29,7 @@ jobs:
       - name: Upload Results
         uses: actions/upload-artifact@v2
         with:
-          name: report-lending_portal_bfs_pro_with_parameters${{ matrix.threads }}.jmx
+          name: report-lending_portal_bfs_pro_with_parameters_${{ matrix.threads }}.jmx
           path: results/JMeterReport${{ matrix.threads }}/
       - name: Public Reports
         uses: jakejarvis/s3-sync-action@master
