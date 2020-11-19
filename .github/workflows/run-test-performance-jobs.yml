@@ -1,7 +1,7 @@
 name: Run Lending Portal Performance BFS
 on:
   schedule:
-    - cron:  '7 11 * * *'
+    - cron:  '10 11 * * *'
 jobs:
   Run_Performance_Test:
     runs-on: ubuntu-latest
