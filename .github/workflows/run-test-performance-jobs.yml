@@ -1,8 +1,8 @@
 name: Run Lending Portal Performance BFS
 on:
-  schedule:
-    # * is a special character in YAML so you have to quote this string
-    - cron:  '*/5 * * * *'
+  push:
+    branches:
+      - master
 jobs:
   Run_Performance_Test:
     runs-on: ubuntu-latest
@@ -25,13 +25,13 @@ jobs:
         run: apache-jmeter-5.1/bin/jmeter.sh -j results/jmeter.log -p tests/user.properties -t tests/originationservice_with_parameters.jmx -n -l results/result.csv -Jserver=clover-os-uat.lendingfront.com -Jtimeout=10000 -Jthreads=${{ matrix.threads }} -JloopCount=1
       - name: Generate Report
         run: |
-          rm -rf results/JMeterReport && mkdir results/JMeterReport
-          apache-jmeter-5.1/bin/jmeter.sh -g results/result.csv -o results/JMeterReport
+          rm -rf results/JMeterReport${{ matrix.threads }} && mkdir results/JMeterReport${{ matrix.threads }}
+          apache-jmeter-5.1/bin/jmeter.sh -g results/result.csv -o results/JMeterReport${{ matrix.threads }}
       - name: Upload Results
         uses: actions/upload-artifact@v2
         with:
-          name: report-lending_portal_bfs_pro_with_parameters.jmx
-          path: results/JMeterReport/
+          name: report-lending_portal_bfs_pro_with_parameters${{ matrix.threads }}.jmx
+          path: results/JMeterReport${{ matrix.threads }}/
       - name: Public Reports
         uses: jakejarvis/s3-sync-action@master
         with:
