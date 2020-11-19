@@ -4,12 +4,11 @@ on:
     branches:
       - master
   schedule:
-    - cron:  '25 12 * * *'
+    - cron:  '50 17 * * *'
 jobs:
   Run_Performance_Test:
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 2
       matrix:
         threads: [1, 10]
     steps:
