@@ -1,11 +1,12 @@
 name: Run Lending Portal Performance BFS
 on:
   schedule:
-    - cron:  '*/15 * * * *'
+    - cron:  '25 12 * * *'
 jobs:
   Run_Performance_Test:
     runs-on: ubuntu-latest
     strategy:
+      max-parallel: 1
       matrix:
         threads: [1, 10]
     steps:
