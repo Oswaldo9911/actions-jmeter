@@ -22,11 +22,11 @@ jobs:
           rm -rf results && mkdir results
           chmod -R 777 ./
       - name: Run and Generate Report
-        run: apache-jmeter-5.1/bin/jmeter.sh -j results/jmeter.log -p tests/user.properties -t tests/originationservice_with_parameters.jmx -n -l results/result.csv -Jserver=clover-os-uat.lendingfront.com -Jtimeout=10000 -Jthreads=${{ matrix.threads }} -JloopCount=1
+        run: apache-jmeter-5.1/bin/jmeter.sh -j results/jmeter.log -p tests/user.properties -t tests/originationservice_with_parameters.jmx -n -l results/result${{ matrix.threads }}.csv -Jserver=clover-os-uat.lendingfront.com -Jtimeout=10000 -Jthreads=${{ matrix.threads }} -JloopCount=1
       - name: Generate Report
         run: |
           rm -rf results/JMeterReport${{ matrix.threads }} && mkdir results/JMeterReport${{ matrix.threads }}
-          apache-jmeter-5.1/bin/jmeter.sh -g results/result.csv -o results/JMeterReport${{ matrix.threads }}
+          apache-jmeter-5.1/bin/jmeter.sh -g results/result${{ matrix.threads }}.csv -o results/JMeterReport${{ matrix.threads }}
       - name: Upload Results
         uses: actions/upload-artifact@v2
         with:
