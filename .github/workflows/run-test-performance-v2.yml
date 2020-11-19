@@ -25,7 +25,6 @@ on:
         default: '1'
 jobs:
   Run_Performance_Test:
-    needs: Run_Performance_Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -53,7 +52,7 @@ jobs:
           name: report-${{ github.event.inputs.name_test }}
           path: results/JMeterReport/
   Run_Performance_Test2:
-    needs: Run_Performance_Test2
+    needs: Run_Performance_Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
