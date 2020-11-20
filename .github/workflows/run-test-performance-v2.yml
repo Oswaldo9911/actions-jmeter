@@ -52,45 +52,7 @@ jobs:
         with:
           name: report-${{ github.event.inputs.name_test }}
           path: results/JMeterReport/
-      - name: Run and Generate Report 2
-        run: apache-jmeter-5.1/bin/jmeter.sh -j results/jmeter.log -p tests/user.properties -t tests/${{ github.event.inputs.name_test }} -n -l results/result.csv -Jserver=${{ github.event.inputs.url }} -Jtimeout=${{ github.event.inputs.timeout }} -Jthreads=${{ github.event.inputs.threads }} -JloopCount=${{ github.event.inputs.loops }}
-      - name: Generate Report 2
-        run: |
-          rm -rf results/JMeterReport && mkdir results/JMeterReport
-          apache-jmeter-5.1/bin/jmeter.sh -g results/result.csv -o results/JMeterReport
-      - name: Upload Results 2
-        uses: actions/upload-artifact@v2
-        with:
-          name: report-${{ github.event.inputs.name_test }}
-          path: results/JMeterReport/
           
-  Run_Performance_Test2:
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Python
-        run: echo "python"
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{env.pythonVersion}}
-      - name: Install JMeter
-        run: |
-          python bin/JMeterInstaller.py
-          rm -rf results && mkdir results
-          chmod -R 777 ./
-      - name: Run and Generate Report
-        run: apache-jmeter-5.1/bin/jmeter.sh -j results/jmeter.log -p tests/user.properties -t tests/${{ github.event.inputs.name_test }} -n -l results/result.csv -Jserver=${{ github.event.inputs.url }} -Jtimeout=${{ github.event.inputs.timeout }} -Jthreads=${{ github.event.inputs.threads }} -JloopCount=${{ github.event.inputs.loops }}
-      - name: Generate Report
-        run: |
-          rm -rf results/JMeterReport && mkdir results/JMeterReport
-          apache-jmeter-5.1/bin/jmeter.sh -g results/result.csv -o results/JMeterReport
-      - name: Upload Results
-        uses: actions/upload-artifact@v2
-        with:
-          name: report-${{ github.event.inputs.name_test }}
-          path: results/JMeterReport/
       - name: Run and Generate Report 2
         run: apache-jmeter-5.1/bin/jmeter.sh -j results/jmeter.log -p tests/user.properties -t tests/${{ github.event.inputs.name_test }} -n -l results/result.csv -Jserver=${{ github.event.inputs.url }} -Jtimeout=${{ github.event.inputs.timeout }} -Jthreads=${{ github.event.inputs.threads }} -JloopCount=${{ github.event.inputs.loops }}
       - name: Generate Report 2
