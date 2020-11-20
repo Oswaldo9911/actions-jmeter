@@ -32,9 +32,11 @@ jobs:
       - name: Python
         run: echo "python"
       - name: Set up Python
+        env:
+          PYTHON_VERSION: 3.7
         uses: actions/setup-python@v2
         with:
-          python-version: 3.7
+          python-version: $PYTHON_VERSION
       - name: Install JMeter
         run: |
           python bin/JMeterInstaller.py
