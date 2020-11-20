@@ -2,7 +2,7 @@ name: Run Lending Portal Performance BFS
 on:
   push:
     branches:
-      - master
+      - staging
   schedule:
     - cron:  '50 20 * * *'
 jobs:

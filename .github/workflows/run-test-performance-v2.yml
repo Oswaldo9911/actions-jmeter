@@ -1,5 +1,6 @@
 name: Run Performance Test V2
-
+env:
+  pythonVersion: '3.7'
 on:
   workflow_dispatch:
     inputs:
@@ -32,11 +33,9 @@ jobs:
       - name: Python
         run: echo "python"
       - name: Set up Python
-        env:
-          PYTHON_VERSION: 3.7
         uses: actions/setup-python@v2
         with:
-          python-version: $PYTHON_VERSION
+          python-version: ${{env.pythonVersion}}
       - name: Install JMeter
         run: |
           python bin/JMeterInstaller.py
